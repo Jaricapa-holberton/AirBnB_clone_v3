@@ -1,3 +1,19 @@
+# activate venv
+
+python3 -m venv AirBnB_clone_v3 .
+source bin/activate 
+
+# instal mysql and sqlalchemy
+
+sudo apt-get install mysql-server
+sudo apt-get install mysql-client
+sudo apt-get install libmysqlclient15-dev
+
+
+# install flask
+
+pip install Flask    
+
 # go to the branch for task 2 - 3
 
 git checkout storage_get_count
