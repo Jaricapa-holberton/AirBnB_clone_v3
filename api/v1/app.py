@@ -14,6 +14,7 @@ app.register_blueprint(app_views)
 def index():
     return 'Hello HBNB!'"""
 
+
 @app.errorhandler(404)
 def handle_404(error):
     """returns json 404 status code response"""
