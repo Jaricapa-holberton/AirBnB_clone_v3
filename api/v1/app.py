@@ -33,4 +33,4 @@ if __name__ == '__main__':
         host = '0.0.0.0'
     if not port:
         port = 5000
-    app.run(host=host, port=port, threaded=True, debug=True)
+    app.run(debug=True, host=host, port=port, threaded=True)
