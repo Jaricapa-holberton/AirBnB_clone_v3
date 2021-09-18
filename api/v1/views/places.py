@@ -12,7 +12,7 @@ from models.place import Place
 
 @app_views.route('/cities/<city_id>/places', methods=["GET"],
                  strict_slashes=False)
-def city_places(city_id=None):
+def city_places(city_id):
     """retrieves a list of all places by city id"""
     my_city = storage.get(City, city_id)
     if my_city is None:
@@ -22,8 +22,8 @@ def city_places(city_id=None):
     return (jsonify(my_places), 200)
 
 
-@app_views.route('/places/place_id', methods=["GET"], strict_slashes=False)
-def places(place_id):
+@app_views.route('/places/<place_id>', methods=["GET"], strict_slashes=False)
+def get_place(place_id):
     """ retrieve a place object"""
     my_place = storage.get(Place, place_id)
     if my_place is None:
@@ -47,20 +47,20 @@ def delete_place(place_id):
                  strict_slashes=False)
 def post_places(city_id):
     """ creates a place"""
-    data = request.get_json()
-    if data is None:
-        abort(400, "Not a JSON")
     my_city = storage.get(City, city_id)
     if my_city is None:
         abort(404)
-    user_id = content.get("user_id")
-    if user_id is None:
+    data = request.get_json()
+    if data is None:
+        abort(400, "Not a JSON")
+    user_id = data.get("user_id")
+    if "user_id" not in data:
         abort(400, "Missing user_id")
     my_user = storage.get(User, user_id)
     if my_user is None:
         abort(404)
-    name = content.get("name")
-    if "name" is None():
+    name = data.get("name")
+    if "name" not in data:
         abort(400, "Missing name")
     new_place = Place()
     new_place.city_id = city_id
