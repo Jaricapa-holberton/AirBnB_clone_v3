@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""State objects that handles all default RestFul API actions"""
+"""Amenity view module"""
 
 from api.v1.views import app_views
 from models import storage
@@ -50,7 +50,7 @@ def delete_amenities(amenity_id=None):
 
 @app_views.route('/amenities', methods=['POST'], strict_slashes=False)
 def post_amenities():
-    """function that create amenities"""
+    """ Create a amenity """
     data_to_post = request.get_json()
     if data_to_post is None:
         return make_response(jsonify({'error': 'Not a JSON'}), 400)
@@ -65,7 +65,7 @@ def post_amenities():
 @app_views.route('/amenities/<amenity_id>', methods=['PUT'],
                  strict_slashes=False)
 def put_amenities(amenity_id):
-    """Fuction that update amenities"""
+    """ Update a amenity by id """
     amenity_to_mod = storage.get(Amenity, amenity_id)
     if amenity_to_mod is None:
         abort(404)
