@@ -1,5 +1,6 @@
 #!/user/bin/python3
 """User module"""
+
 from api.v1.views import app_views
 from models import storage
 from flask import Flask, jsonify, request, abort, make_response
@@ -7,6 +8,7 @@ from models.state import State
 from models.city import City
 from models.user import User
 
+app = Flask(__name__)
 
 @app_views.route('/users', methods=['GET'],
                  strict_slashes=False)
