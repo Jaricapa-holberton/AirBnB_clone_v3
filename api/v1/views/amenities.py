@@ -79,4 +79,4 @@ def put_amenities(amenity_id):
         else:
             setattr(amenity_to_mod, key, value)
     amenity_to_mod.save()
-    return jsonify(amenity_to_mod.to_dict())
+    return jsonify(amenity_to_mod.to_dict()), 200
