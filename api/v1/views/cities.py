@@ -53,7 +53,7 @@ def post_city(state_id):
     if my_state is None:
         abort(404)
     new_city = City()
-    new_city.state_id = id
+    new_city.state_id = state_id
     new_city.name = name
     new_city.save()
 
