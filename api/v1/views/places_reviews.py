@@ -74,18 +74,15 @@ def post_review_by_id(place_id):
 @app_views.route('/reviews/<review_id>', methods=['PUT'],
                  strict_slashes=False)
 def put_review(review_id):
-    """ Update a review by id """
-    plcreview_to_mod = storage.get(Review, review_id)
-    if plcreview_to_mod is None:
+    """update a review"""
+    if request.get_json() is None:
+        return "Not a JSON", 400
+    review = storage.get(Review, review_id)
+    if review is None:
         abort(404)
-    data_to_mod = request.get_json()
-    if data_to_mod is None:
-        return make_response(jsonify({'error': 'Not a JSON'}), 400)
-
-    for key, value in data_to_mod.items():
-        if key in ['id', 'user_id', 'place_id', 'created_at', 'updated_at']:
-            continue
-        else:
-            setattr(plcreview_to_mod, key, value)
-    plcreview_to_mod.save()
-    return jsonify(plcreview_to_mod.to_dict()), 200
+    ignored = ['id', 'user_id', 'place_id', 'created_at', 'updated_at']
+    for attr, val in request.get_json().items():
+        if attr not in ignored:
+            setattr(review, attr, val)
+    review.save()
+    return jsonify(review.to_dict()), 200
