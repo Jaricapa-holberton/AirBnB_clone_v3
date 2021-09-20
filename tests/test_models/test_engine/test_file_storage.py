@@ -115,7 +115,7 @@ class TestFileStorage(unittest.TestCase):
         self.assertEqual(json.loads(string), json.loads(js))
 
         def test_get_method(self):
-            """Tests the get method"""
+        """Tests the get method"""
         get_state = models.storage.get('State', '12343')
         self.assertEqual(get_state, None)
 
