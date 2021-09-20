@@ -115,3 +115,14 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+    def test_get_method(self):
+        """Tests the get method"""
+        get_state = models.storage.get('State', '12343')
+        self.assertEqual(get_state, None)
+
+    def test_filestorage_count(self):
+        """Tests the count method"""
+        all_obj = models.storage.all()
+        count_all_obj = models.storage.count()
+        self.assertEqual(len(all_obj), count_all_obj)
