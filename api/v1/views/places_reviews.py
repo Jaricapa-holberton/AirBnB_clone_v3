@@ -12,20 +12,20 @@ from models import storage
 
 @app_views.route('/places/<place_id>/reviews', methods=['GET'],
                  strict_slashes=False)
-def get_all_reviews(place_id):
+def all_reviews(place_id):
     """get information for all reviews"""
-    place = storage.get(Place, place_id)
-    if place is None:
+    place_to_rew = storage.get(Place, place_id)
+    if place_to_rew is None:
         abort(404)
     reviews = []
-    for obj in place.reviews:
-        reviews.append(obj.to_dict())
+    for review in place_to_rew.reviews:
+        reviews.append(review.to_dict())
     return jsonify(reviews)
 
 
 @app_views.route('/reviews/<review_id>', methods=['GET'],
                  strict_slashes=False)
-def get_review_by_id(review_id):
+def review_by_id(review_id):
     """get information for the specified review"""
     review = storage.get(Review, review_id)
     if review:
@@ -38,9 +38,9 @@ def get_review_by_id(review_id):
                  strict_slashes=False)
 def delete_review_by_id(review_id):
     """delete review by id"""
-    obj = storage.get(Review, review_id)
-    if obj:
-        storage.delete(obj)
+    review = storage.get(Review, review_id)
+    if review:
+        storage.delete(review)
         storage.save()
         return jsonify({}), 200
     else:
@@ -51,21 +51,21 @@ def delete_review_by_id(review_id):
                  strict_slashes=False)
 def post_review_create(place_id):
     """create a new review"""
-    conten = request.get_json()
-    if conten is None:
+    data_to_post = request.get_json()
+    if data_to_post is None:
         return "Not a JSON", 400
-    place = storage.get(Place, place_id)
-    if not place:
+    place_to_rew = storage.get(Place, place_id)
+    if not place_to_rew:
         abort(404)
-    if conten.get('user_id') is None:
+    if data_to_post.get('user_id') is None:
         return "Missing user_id", 400
     user = storage.get(User, request.get_json()['user_id'])
     if not user:
         abort(404)
-    if conten.get('text') is None:
+    if data_to_post.get('text') is None:
         return "Missing text", 400
     else:
-        review = Review(**conten)
+        review = Review(**data_to_post)
         review.place_id = place_id
         review.save()
     return jsonify(review.to_dict()), 201
