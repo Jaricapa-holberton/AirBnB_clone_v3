@@ -90,11 +90,10 @@ class TestFileStorage(unittest.TestCase):
 
 # new tests
 
+
 @unittest.skipIf(models.storage_t != 'db', 'not testing db storage')
 class TestCountGet(unittest.TestCase):
     """testing Count and Get methods"""
-
-
 
     def test_get(self):
         """test get() function"""
