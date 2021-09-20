@@ -3,10 +3,10 @@
 Contains the TestDBStorageDocs and TestDBStorage classes
 """
 
+from models import storage
 from datetime import datetime
 import inspect
 import models
-from models import storage
 from models.engine import db_storage
 from models.amenity import Amenity
 from models.base_model import BaseModel
@@ -88,27 +88,47 @@ class TestFileStorage(unittest.TestCase):
     def test_save(self):
         """Test that save properly saves objects to file.json"""
 
-# new tests
-
 
 @unittest.skipIf(models.storage_t != 'db', 'not testing db storage')
-class TestCountGet(unittest.TestCase):
-    """testing Count and Get methods"""
+class TestImproveStorage(unittest.TestCase):
+    """Testing Count and Get methods"""
 
-    def test_get(self):
-        """test get() function"""
-        duplicate = storage.get(Place, self.place1.id)
-        expected = self.place1.id
-        self.assertEqual(expected, duplicate.id)
+    def setUp(self):
+        """Initializes new objects dbstorage"""
+        self.state_1 = State(name="California")
+        self.state_1.save()
+        self.state_2 = State(name="Texas")
+        self.state_2.save()
+        self.state_3 = State(name="Florida")
+        self.state_3.save()
+        self.city_1 = City(
+            state_id=self.state_1.id,
+            name="San Francisco")
+        self.city_1.save()
 
-    def test_count(self):
-        """test count(class) function"""
-        count_user = storage.count(User)
-        n_user = 1
-        count_place = storage.count(Place)
-        n_place = 2
-        count_amenity = storage.count(Amenity)
-        n_amenity = 3
-        self.assertEqual(n_user, count_user)
-        self.assertEqual(n_place, count_place)
-        self.assertEqual(n_amenity, count_amenity)
+    def test_get_state(self):
+        """Check return of get method"""
+        obj_state = models.storage.get('State', self.state_1.id)
+        state_id = self.state_1.id
+        self.assertEqual(state_id, obj_state.id)
+
+    def test_count_all(self):
+        """Checks return of count method"""
+        count_objs = models.storage.count()
+        self.state_5 = State(name="Cali")
+        models.storage.new(self.state_5)
+        self.state_5.save()
+        count_objs2 = models.storage.count()
+        self.assertEqual(count_objs + 1, count_objs2)
+
+
+class TestCodeFormat(unittest.TestCase):
+    """Class to do pep8 validation."""
+    def test_pep8(self):
+        """Test that we conform to pep8"""
+        pep8style = pep8.StyleGuide(quiet=True)
+        file1 = 'models/engine/db_storage.py'
+        file2 = 'tests/test_models/test_engine/test_db_storage.py'
+        result = pep8style.check_files([file1, file2])
+        self.assertEqual(result.total_errors, 0,
+                         "Found code style errors (and warning).")

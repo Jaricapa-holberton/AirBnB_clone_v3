@@ -3,6 +3,7 @@
 Contains the TestFileStorageDocs classes
 """
 
+from models import storage
 from datetime import datetime
 import inspect
 import models
@@ -18,8 +19,6 @@ import json
 import os
 import pep8
 import unittest
-
-
 FileStorage = file_storage.FileStorage
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
@@ -43,7 +42,7 @@ class TestFileStorageDocs(unittest.TestCase):
         """Test tests/test_models/test_file_storage.py conforms to PEP8."""
         pep8s = pep8.StyleGuide(quiet=True)
         result = pep8s.check_files(['tests/test_models/test_engine/\
-        test_file_storage.py'])
+test_file_storage.py'])
         self.assertEqual(result.total_errors, 0,
                          "Found code style errors (and warnings).")
 
@@ -115,3 +114,49 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+
+@unittest.skipIf(models.storage_t == 'db', 'not testing file storage')
+class TestImproveStorage(unittest.TestCase):
+    """Testing Count and Get methods"""
+
+    def setUp(self):
+        """Initializes new objects filestorage"""
+        self.state_1 = State(name="California")
+        self.state_1.save()
+        self.state_2 = State(name="Texas")
+        self.state_2.save()
+        self.state_3 = State(name="Florida")
+        self.state_3.save()
+        self.city_1 = City(
+            state_id=self.state_1.id,
+            name="San Francisco"
+        )
+        self.city_1.save()
+
+    def test_get_state(self):
+        """Check return of get method"""
+        obj_state = models.storage.get('State', self.state_1.id)
+        state_id = self.state_1.id
+        self.assertEqual(state_id, obj_state.id)
+
+    def test_count_all(self):
+        """Checks return of count method"""
+        count_objs = models.storage.count()
+        self.state_5 = State(name="Cali")
+        models.storage.new(self.state_5)
+        self.state_5.save()
+        count_objs2 = models.storage.count()
+        self.assertEqual(count_objs + 1, count_objs2)
+
+
+class TestCodeFormat(unittest.TestCase):
+    """Class to do pep8 validation."""
+    def test_pep8(self):
+        """Test that we conform to pep8"""
+        pep8style = pep8.StyleGuide(quiet=True)
+        file1 = 'models/engine/file_storage.py'
+        file2 = 'tests/test_models/test_engine/test_file_storage.py'
+        result = pep8style.check_files([file1, file2])
+        self.assertEqual(result.total_errors, 0,
+                         "Found code style errors (and warning).")
